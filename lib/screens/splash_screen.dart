@@ -1,4 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
+
+class AppColors {
+  static const background = Color(0xFF0F172A);
+
+  static const primary = Color(0xFF3B82F6);
+
+  static const card = Color(0xFF1E293B);
+
+  static const textPrimary = Colors.white;
+
+  static const textSecondary = Colors.white70;
+}
 
 class SplashScreen extends StatelessWidget {
   const SplashScreen({super.key});
@@ -9,53 +23,105 @@ class SplashScreen extends StatelessWidget {
       body: Container(
         width: double.infinity,
         height: double.infinity,
+
         decoration: const BoxDecoration(
           gradient: LinearGradient(
             colors: [
-              Color.fromARGB(255, 189, 202, 213),
-              Color.fromARGB(255, 39, 112, 176),
+              Color(0xFF0F172A),
+              Color(0xFF1E3A8A),
             ],
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
           ),
         ),
+
         child: SafeArea(
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20),
+            padding: const EdgeInsets.symmetric(horizontal: 24),
+
             child: Column(
               children: [
-                // Top Right Text
-                Align(
+
+                /// Top Right Logo Text
+                const Align(
                   alignment: Alignment.topRight,
-                  child: Text(
-                    'PT',
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
-                      letterSpacing: 1,
+
+                  child: Padding(
+                    padding: EdgeInsets.only(top: 12),
+
+                    child: Text(
+                      'PT • v1.0',
+
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.white70,
+                        letterSpacing: 1,
+                      ),
                     ),
                   ),
                 ),
 
-                // Center Content
+                /// Main Content
                 Expanded(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
+
                     children: [
-                      Image.asset(
-                        'splash_image.png',
-                        width: 180,
-                        height: 180,
-                        fit: BoxFit.contain,
+
+                      /// Animated Logo
+                      TweenAnimationBuilder(
+                        tween: Tween<double>(
+                          begin: 0.7,
+                          end: 1,
+                        ),
+
+                        duration: const Duration(seconds: 2),
+
+                        curve: Curves.easeOut,
+
+                        builder: (context, value, child) {
+
+                          return Transform.scale(
+                            scale: value,
+
+                            child: Opacity(
+                              opacity: value,
+                              child: child,
+                            ),
+                          );
+                        },
+
+                        child: Container(
+                          decoration: BoxDecoration(
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.white.withOpacity(0.15),
+                                blurRadius: 30,
+                                spreadRadius: 3,
+                              ),
+                            ],
+                          ),
+
+                          child: Image.asset(
+                            'assets/splash_image.png',
+                            width: 190,
+                            height: 190,
+                            fit: BoxFit.contain,
+                          ),
+                        ),
                       ),
 
-                      const SizedBox(height: 30),
+                      const SizedBox(height: 35),
 
-                      const Text(
+                      /// App Name
+                      Text(
                         'Placement Tracker',
-                        style: TextStyle(
-                          fontSize: 30,
+
+                        textAlign: TextAlign.center,
+
+                        style: GoogleFonts.poppins(
+                          fontSize: 34,
                           fontWeight: FontWeight.bold,
                           color: Colors.white,
                           letterSpacing: 1,
@@ -64,27 +130,39 @@ class SplashScreen extends StatelessWidget {
 
                       const SizedBox(height: 12),
 
-                   
+                      /// Tagline
+                      Text(
+                        'Track • Apply • Get Hired',
 
-                      const SizedBox(height: 40),
+                        textAlign: TextAlign.center,
 
-                      const Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
+                        style: GoogleFonts.poppins(
+                          fontSize: 15,
+                          color: Colors.white70,
+                          letterSpacing: 0.5,
+                        ),
+                      ),
+
+                      const SizedBox(height: 55),
+
+                      /// Premium Loading Section
+                      Column(
                         children: [
-                          SizedBox(
-                            width: 22,
-                            height: 22,
-                            child: CircularProgressIndicator(
-                              strokeWidth: 2.5,
-                              color: Colors.white,
-                            ),
+
+                          LoadingAnimationWidget.staggeredDotsWave(
+                            color: Colors.white,
+                            size: 42,
                           ),
-                          SizedBox(width: 15),
+
+                          const SizedBox(height: 18),
+
                           Text(
-                            'Loading...',
-                            style: TextStyle(
-                              fontSize: 16,
-                              color: Colors.white,
+                            'Preparing opportunities...',
+
+                            style: GoogleFonts.poppins(
+                              fontSize: 14,
+                              color: Colors.white70,
+                              letterSpacing: 0.5,
                             ),
                           ),
                         ],
@@ -93,14 +171,17 @@ class SplashScreen extends StatelessWidget {
                   ),
                 ),
 
-                // Bottom Copyright
-                const Padding(
-                  padding: EdgeInsets.only(bottom: 15),
+                /// Bottom Footer
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 18),
+
                   child: Text(
                     '© 2026 Placement Tracker',
-                    style: TextStyle(
+
+                    style: GoogleFonts.poppins(
                       fontSize: 12,
-                      color: Colors.white70,
+                      color: Colors.white.withOpacity(0.6),
+                      letterSpacing: 0.5,
                     ),
                   ),
                 ),
