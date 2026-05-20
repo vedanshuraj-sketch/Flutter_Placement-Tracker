@@ -31,7 +31,7 @@ class _EditscreenState extends State<Editscreen> {
     companyController = TextEditingController(text: job.company);
     cityController = TextEditingController(text: job.city);
     salaryController = TextEditingController(text: job.salary.toString());
-    descriptionController = TextEditingController(text: job.Description);
+    descriptionController = TextEditingController(text: job.description);
   }
 
   @override

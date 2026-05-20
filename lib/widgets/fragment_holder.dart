@@ -31,7 +31,7 @@ class _FragmentHolderState extends State<FragmentHolder> {
               builder: (context) => const AddEntryScreen(),
             );
 
-          case '/Editscreen':
+          case '/EditScreen':
             return MaterialPageRoute(
               builder: (context) => const Editscreen(),
               settings: settings,
