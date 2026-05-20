@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:placement_tracker/widgets/fragment_holder.dart';
 
 class Job {
-  String title, company, city, Description;
+  String title, company, city, description;
   int salary;
-  Job(this.title, this.company, this.city, this.salary, this.Description);
+  Job(this.title, this.company, this.city, this.salary, this.description);
 }
 
 class HomePage1 extends StatefulWidget {
@@ -23,12 +24,19 @@ class _HomePage1State extends State<HomePage1> {
   final List<String> cities = ['All', 'Mumbai', 'Delhi', 'Bangalore', 'Chennai'];
   String? selectedCity;
 
- Future<void> addJob() async {
-  final newJob = await Navigator.pushNamed(context, '/AddScreen');
+  Future<void> addJob() async {
 
-  if (newJob is Job) {
+  final result = await Navigator.pushNamed(
+    context,
+    '/AddScreen',
+  );
+
+  if (result != null && result is Job) {
+
     setState(() {
-      jobs.add(newJob);
+
+      jobs.add(result);
+
     });
   }
 }
@@ -39,21 +47,28 @@ class _HomePage1State extends State<HomePage1> {
     });
   }
 
- 
-  Future<void> editJob(Job job) async {
-    final updatedJob = await Navigator.pushNamed(
-      context,
-      '/Editscreen',
-      arguments: job,
-    );
+Future<void> editJob(Job job) async {
 
-    if (updatedJob is Job) {
-      setState(() {
-        final index = jobs.indexOf(job);
-        if (index != -1) jobs[index] = updatedJob;
-      });
-    }
+  final updatedJob = await Navigator.pushNamed(
+    context,
+    '/EditScreen',
+    arguments: job,
+  );
+
+  if (updatedJob is Job) {
+
+    setState(() {
+
+      final index = jobs.indexOf(job);
+
+      if (index != -1) {
+
+        jobs[index] = updatedJob;
+
+      }
+    });
   }
+}
 
   @override
   Widget build(BuildContext context) {
@@ -156,21 +171,13 @@ class _HomePage1State extends State<HomePage1> {
                           Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                              
                               IconButton(
                                 onPressed: () => editJob(job),
-                                icon: const Icon(
-                                  Icons.edit,
-                                  color: Colors.blue,
-                                ),
+                                icon: const Icon(Icons.edit, color: Colors.blue),
                               ),
-                              
                               IconButton(
                                 onPressed: () => deleteJob(job),
-                                icon: const Icon(
-                                  Icons.delete,
-                                  color: Colors.redAccent,
-                                ),
+                                icon: const Icon(Icons.delete, color: Colors.redAccent),
                               ),
                             ],
                           ),
