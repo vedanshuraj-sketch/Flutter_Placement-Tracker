@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:placement_tracker/EditScreen.dart';
 
 class Job {
   final String title;
@@ -24,18 +25,17 @@ class HomePage1 extends StatefulWidget {
 }
 
 class _HomePage1State extends State<HomePage1> {
-
   List<Job> jobs = [
     Job(
-      title: 'Software Engineer',
       company: 'Google',
+      title: 'Software Engineer',
       location: 'Mumbai',
       salary: '₹80,000',
       Description: '',
     ),
     Job(
-      title: 'Flutter Developer',
       company: 'Infosys',
+      title: 'Flutter Developer',
       location: 'Delhi',
       salary: '₹60,000',
       Description: '',
@@ -56,11 +56,11 @@ class _HomePage1State extends State<HomePage1> {
     setState(() {
       jobs.add(
         Job(
-          title: 'Backend Developer',
           company: 'TCS',
+          title: 'Backend Developer',
           location: 'Bangalore',
           salary: '₹70,000',
-          Description:''
+          Description: '',
         ),
       );
     });
@@ -72,19 +72,15 @@ class _HomePage1State extends State<HomePage1> {
     });
   }
 
-  void editJob(int index) {
-    
-  }
+  void editJob(int index) {}
 
   @override
   Widget build(BuildContext context) {
-
     final filteredJobs = (selectedCity == null || selectedCity == 'All')
         ? jobs
         : jobs.where((job) => job.location == selectedCity).toList();
 
     return Scaffold(
-
       backgroundColor: const Color(0xFFEAF6FB),
 
       appBar: AppBar(
@@ -95,20 +91,13 @@ class _HomePage1State extends State<HomePage1> {
 
         title: const Text(
           'Placement Tracker',
-          style: TextStyle(
-            color: Colors.blue,
-            fontWeight: FontWeight.bold,
-          ),
+          style: TextStyle(color: Colors.blue, fontWeight: FontWeight.bold),
         ),
 
         actions: [
           IconButton(
             onPressed: addJob,
-            icon: const Icon(
-              Icons.add,
-              color: Colors.blueAccent,
-              size: 30,
-            ),
+            icon: const Icon(Icons.add, color: Colors.blueAccent, size: 30),
           ),
         ],
       ),
@@ -118,7 +107,6 @@ class _HomePage1State extends State<HomePage1> {
 
         child: Column(
           children: [
-
             /// Dropdown
             DropdownButtonFormField<String>(
               initialValue: selectedCity,
@@ -141,10 +129,7 @@ class _HomePage1State extends State<HomePage1> {
               ),
 
               items: cities.map((city) {
-                return DropdownMenuItem(
-                  value: city,
-                  child: Text(city),
-                );
+                return DropdownMenuItem(value: city, child: Text(city));
               }).toList(),
 
               onChanged: (value) {
@@ -159,11 +144,9 @@ class _HomePage1State extends State<HomePage1> {
             /// Job List
             Expanded(
               child: ListView.builder(
-                
                 itemCount: filteredJobs.length,
 
                 itemBuilder: (context, index) {
-
                   final job = filteredJobs[index];
 
                   return Card(
@@ -180,15 +163,11 @@ class _HomePage1State extends State<HomePage1> {
 
                       child: Row(
                         children: [
-
                           CircleAvatar(
                             radius: 28,
                             backgroundColor: Colors.blue.shade100,
 
-                            child: const Icon(
-                              Icons.work,
-                              color: Colors.blue,
-                            ),
+                            child: const Icon(Icons.work, color: Colors.blue),
                           ),
 
                           const SizedBox(width: 16),
@@ -196,13 +175,11 @@ class _HomePage1State extends State<HomePage1> {
                           /// Job Details
                           Expanded(
                             child: Column(
-                              crossAxisAlignment:
-                                  CrossAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
 
                               children: [
-
                                 Text(
-                                  job.title,
+                                  job.company,
 
                                   style: const TextStyle(
                                     fontSize: 18,
@@ -213,17 +190,13 @@ class _HomePage1State extends State<HomePage1> {
                                 const SizedBox(height: 6),
 
                                 Text(
-                                  job.company,
-                                  style: const TextStyle(
-                                    color: Colors.black87,
-                                  ),
+                                  job.title,
+                                  style: const TextStyle(color: Colors.black87),
                                 ),
 
                                 Text(
                                   job.location,
-                                  style: const TextStyle(
-                                    color: Colors.grey,
-                                  ),
+                                  style: const TextStyle(color: Colors.grey),
                                 ),
                               ],
                             ),
@@ -232,7 +205,6 @@ class _HomePage1State extends State<HomePage1> {
                           /// Salary + Actions
                           Column(
                             children: [
-
                               Text(
                                 job.salary,
 
@@ -247,9 +219,14 @@ class _HomePage1State extends State<HomePage1> {
                                 mainAxisSize: MainAxisSize.min,
 
                                 children: [
-
                                   IconButton(
-                                    onPressed: () => editJob(index),
+                                    onPressed: () {
+                                      Navigator.pushNamed(
+                                        context,
+                                        '/Editscreen',
+                                        arguments: job,
+                                      );
+                                    },
 
                                     icon: const Icon(
                                       Icons.edit,
