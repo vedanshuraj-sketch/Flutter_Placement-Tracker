@@ -1,7 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:placement_tracker/HomePage1.dart';
 
-class AddEntryScreen extends StatelessWidget {
+class AddEntryScreen extends StatefulWidget {
   const AddEntryScreen({super.key});
+
+  @override
+  State<AddEntryScreen> createState() => _AddEntryScreenState();
+}
+
+class _AddEntryScreenState extends State<AddEntryScreen> {
+  final companyController = TextEditingController();
+  final titleController = TextEditingController();
+  final cityController = TextEditingController();
+  final salaryController = TextEditingController();
+  final descriptionController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -46,31 +58,35 @@ class AddEntryScreen extends StatelessWidget {
                 label: "Company Name",
                 hint: "Google, Infosys...",
                 icon: Icons.business,
+                controller: companyController,
               ),
 
               buildField(
                 label: "Job Title",
                 hint: "Software Engineer",
                 icon: Icons.work_outline,
+                controller: titleController,
               ),
 
               buildField(
                 label: "Location",
                 hint: "Mumbai",
                 icon: Icons.location_on_outlined,
+                controller: cityController,
               ),
 
               buildField(
                 label: "Salary",
-                hint: "₹80,000",
+                hint: "80000",
                 icon: Icons.currency_rupee,
+                controller: salaryController,
               ),
 
               buildField(
                 label: "Description",
                 hint: "Write job details here...",
                 icon: Icons.description_outlined,
-                maxLines: 4,
+                controller: descriptionController,
               ),
 
               const SizedBox(height: 28),
@@ -78,33 +94,35 @@ class AddEntryScreen extends StatelessWidget {
               SizedBox(
                 width: double.infinity,
                 height: 56,
+
                 child: DecoratedBox(
                   decoration: BoxDecoration(
                     gradient: const LinearGradient(
-                      colors: [
-                        Color(0xFF4A90E2),
-                        Color(0xFF2563EB),
-                      ],
+                      colors: [Color(0xFF4A90E2), Color(0xFF2563EB)],
                     ),
                     borderRadius: BorderRadius.circular(16),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.blue.withOpacity(0.25),
-                        blurRadius: 14,
-                        offset: const Offset(0, 6),
-                      ),
-                    ],
                   ),
 
                   child: ElevatedButton(
-                    onPressed: () {},
+
+                    onPressed: () {
+
+                      final newjob = Job(
+
+                        titleController.text,
+                        companyController.text,
+                        cityController.text,
+                        int.parse(salaryController.text),
+                        descriptionController.text,
+                        
+                      );
+
+                      Navigator.pop(context, newjob);
+                    },
 
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.transparent,
                       shadowColor: Colors.transparent,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(16),
-                      ),
                     ),
 
                     child: const Text(
@@ -129,7 +147,7 @@ class AddEntryScreen extends StatelessWidget {
     required String label,
     required String hint,
     required IconData icon,
-    int maxLines = 1,
+    required TextEditingController controller,
   }) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 18),
@@ -149,13 +167,13 @@ class AddEntryScreen extends StatelessWidget {
           const SizedBox(height: 8),
 
           TextField(
-            maxLines: maxLines,
+            controller: controller,
+
             decoration: InputDecoration(
               hintText: hint,
-              prefixIcon: Icon(
-                icon,
-                color: Colors.grey.shade600,
-              ),
+
+              prefixIcon: Icon(icon, color: Colors.grey.shade600),
+
               filled: true,
               fillColor: const Color(0xFFF8FAFC),
 
@@ -166,17 +184,12 @@ class AddEntryScreen extends StatelessWidget {
 
               enabledBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(16),
-                borderSide: BorderSide(
-                  color: Colors.grey.shade200,
-                ),
+                borderSide: BorderSide(color: Colors.grey.shade200),
               ),
 
               focusedBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(16),
-                borderSide: const BorderSide(
-                  color: Colors.blue,
-                  width: 1.4,
-                ),
+                borderSide: const BorderSide(color: Colors.blue, width: 1.4),
               ),
             ),
           ),
