@@ -1,42 +1,45 @@
 import 'package:flutter/material.dart';
 import 'package:placement_tracker/HomePage1.dart';
-import 'package:placement_tracker/widgets/test1.dart';
-import 'package:placement_tracker/widgets/test2.dart';
+import 'package:placement_tracker/Editscreen.dart';
+import 'package:placement_tracker/AddScreen.dart';
 import 'package:placement_tracker/widgets/unknownscreen.dart';
 
 class FragmentHolder extends StatefulWidget {
+  const FragmentHolder({super.key});
+
   @override
-  _FragmentHolderState createState() => _FragmentHolderState();
+  State<FragmentHolder> createState() => _FragmentHolderState();
 }
 
 class _FragmentHolderState extends State<FragmentHolder> {
 
-  final List<String> strings = [];
-
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       initialRoute: '/HomePage1',
-
       onGenerateRoute: (settings) {
         switch (settings.name) {
 
           case '/HomePage1':
             return MaterialPageRoute(
-              builder: (context) => HomePage1(),
+              builder: (context) => const HomePage1(),
             );
 
-          case '/test1':
+          case '/AddScreen':
             return MaterialPageRoute(
-              builder: (context) => Test1(),
+              builder: (context) => const AddEntryScreen(),
             );
-          case '/test2':
+
+          case '/Editscreen':
             return MaterialPageRoute(
-              builder: (context) => Test2(),
+              builder: (context) => const Editscreen(),
+              settings: settings,
             );
+
           default:
             return MaterialPageRoute(
-              builder: (context) => UnknownScreen(),
+              builder: (context) =>  UnknownScreen(),
             );
         }
       },
