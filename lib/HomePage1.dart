@@ -1,20 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:placement_tracker/EditScreen.dart';
 
 class Job {
-  final String title;
-  final String company;
-  final String location;
-  final String salary;
-  final String Description;
-
-  Job({
-    required this.title,
-    required this.company,
-    required this.location,
-    required this.salary,
-    required this.Description,
-  });
+  String title, company, city, Description;
+  int salary;
+  Job(this.title, this.company, this.city, this.salary, this.Description);
 }
 
 class HomePage1 extends StatefulWidget {
@@ -26,74 +15,62 @@ class HomePage1 extends StatefulWidget {
 
 class _HomePage1State extends State<HomePage1> {
   List<Job> jobs = [
-    Job(
-      company: 'Google',
-      title: 'Software Engineer',
-      location: 'Mumbai',
-      salary: '₹80,000',
-      Description: '',
-    ),
-    Job(
-      company: 'Infosys',
-      title: 'Flutter Developer',
-      location: 'Delhi',
-      salary: '₹60,000',
-      Description: '',
-    ),
+    Job('Software Engineer', 'Google', 'Mumbai', 80000, 'Responsible for developing and maintaining software applications.'),
+    Job('Flutter Developer', 'Infosys', 'Delhi', 70000, 'Develops mobile applications using Flutter framework.'),
+    Job('Backend Developer', 'TCS', 'Bangalore', 90000, 'Designs and implements backend systems and APIs.'),
   ];
 
-  final List<String> cities = [
-    'All',
-    'Mumbai',
-    'Delhi',
-    'Bangalore',
-    'Chennai',
-  ];
-
+  final List<String> cities = ['All', 'Mumbai', 'Delhi', 'Bangalore', 'Chennai'];
   String? selectedCity;
 
-  void addJob() {
+ Future<void> addJob() async {
+  final newJob = await Navigator.pushNamed(context, '/AddScreen');
+
+  if (newJob is Job) {
     setState(() {
-      jobs.add(
-        Job(
-          company: 'TCS',
-          title: 'Backend Developer',
-          location: 'Bangalore',
-          salary: '₹70,000',
-          Description: '',
-        ),
-      );
+      jobs.add(newJob);
+    });
+  }
+}
+
+  void deleteJob(Job job) {
+    setState(() {
+      jobs.remove(job);
     });
   }
 
-  void deleteJob(int index) {
-    setState(() {
-      jobs.removeAt(index);
-    });
-  }
+ 
+  Future<void> editJob(Job job) async {
+    final updatedJob = await Navigator.pushNamed(
+      context,
+      '/Editscreen',
+      arguments: job,
+    );
 
-  void editJob(int index) {}
+    if (updatedJob is Job) {
+      setState(() {
+        final index = jobs.indexOf(job);
+        if (index != -1) jobs[index] = updatedJob;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     final filteredJobs = (selectedCity == null || selectedCity == 'All')
         ? jobs
-        : jobs.where((job) => job.location == selectedCity).toList();
+        : jobs.where((job) => job.city == selectedCity).toList();
 
     return Scaffold(
       backgroundColor: const Color(0xFFEAF6FB),
-
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
-
         centerTitle: true,
-
         title: const Text(
           'Placement Tracker',
           style: TextStyle(color: Colors.blue, fontWeight: FontWeight.bold),
         ),
-
         actions: [
           IconButton(
             onPressed: addJob,
@@ -101,148 +78,99 @@ class _HomePage1State extends State<HomePage1> {
           ),
         ],
       ),
-
       body: Padding(
         padding: const EdgeInsets.all(16),
-
         child: Column(
           children: [
-            /// Dropdown
             DropdownButtonFormField<String>(
-              initialValue: selectedCity,
-
+              value: selectedCity,
               decoration: InputDecoration(
                 hintText: 'Select city',
-
                 filled: true,
                 fillColor: Colors.white,
-
                 contentPadding: const EdgeInsets.symmetric(
                   horizontal: 16,
                   vertical: 14,
                 ),
-
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(14),
                   borderSide: BorderSide.none,
                 ),
               ),
-
               items: cities.map((city) {
                 return DropdownMenuItem(value: city, child: Text(city));
               }).toList(),
-
-              onChanged: (value) {
-                setState(() {
-                  selectedCity = value;
-                });
-              },
+              onChanged: (value) => setState(() => selectedCity = value),
             ),
 
             const SizedBox(height: 18),
 
-            /// Job List
             Expanded(
               child: ListView.builder(
                 itemCount: filteredJobs.length,
-
                 itemBuilder: (context, index) {
                   final job = filteredJobs[index];
 
                   return Card(
                     margin: const EdgeInsets.only(bottom: 16),
-
                     elevation: 4,
-
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(18),
                     ),
-
                     child: Padding(
                       padding: const EdgeInsets.all(16),
-
                       child: Row(
                         children: [
                           CircleAvatar(
                             radius: 28,
                             backgroundColor: Colors.blue.shade100,
-
                             child: const Icon(Icons.work, color: Colors.blue),
                           ),
 
                           const SizedBox(width: 16),
 
-                          /// Job Details
                           Expanded(
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
-
                               children: [
                                 Text(
                                   job.company,
-
                                   style: const TextStyle(
                                     fontSize: 18,
                                     fontWeight: FontWeight.bold,
                                   ),
                                 ),
-
-                                const SizedBox(height: 6),
-
+                                const SizedBox(height: 4),
                                 Text(
                                   job.title,
                                   style: const TextStyle(color: Colors.black87),
                                 ),
-
                                 Text(
-                                  job.location,
+                                  job.city,
                                   style: const TextStyle(color: Colors.grey),
                                 ),
                               ],
                             ),
                           ),
 
-                          /// Salary + Actions
-                          Column(
+                          Row(
+                            mainAxisSize: MainAxisSize.min,
                             children: [
-                              Text(
-                                job.salary,
-
-                                style: const TextStyle(
-                                  color: Colors.green,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 15,
+                              
+                              IconButton(
+                                onPressed: () => editJob(job),
+                                icon: const Icon(
+                                  Icons.edit,
+                                  color: Colors.blue,
                                 ),
                               ),
-
-                              Row(
-                                mainAxisSize: MainAxisSize.min,
-
-                                children: [
-                                  IconButton(
-                                    onPressed: () {
-                                      Navigator.pushNamed(
-                                        context,
-                                        '/Editscreen',
-                                        arguments: job,
-                                      );
-                                    },
-
-                                    icon: const Icon(
-                                      Icons.edit,
-                                      color: Colors.blue,
-                                    ),
-                                  ),
-
-                                  IconButton(
-                                    onPressed: () => deleteJob(index),
-
-                                    icon: const Icon(
-                                      Icons.delete,
-                                      color: Colors.redAccent,
-                                    ),
-                                  ),
-                                ],
+                              
+                              IconButton(
+                                onPressed: () => deleteJob(job),
+                                icon: const Icon(
+                                  Icons.delete,
+                                  color: Colors.redAccent,
+                                ),
                               ),
                             ],
                           ),
