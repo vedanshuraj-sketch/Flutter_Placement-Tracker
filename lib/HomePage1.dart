@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:placement_tracker/widgets/fragment_holder.dart';
+//import 'package:placement_tracker/widgets/fragment_holder.dart';
+
 
 class Job {
   String title, company, city, description;
