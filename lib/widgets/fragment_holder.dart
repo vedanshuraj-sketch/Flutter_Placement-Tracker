@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:placement_tracker/HomePage1.dart';
-import 'package:placement_tracker/widgets/test1.dart';
-import 'package:placement_tracker/widgets/test2.dart';
+import 'package:placement_tracker/Editscreen.dart';
+import 'package:placement_tracker/AddScreen.dart';
 import 'package:placement_tracker/widgets/unknownscreen.dart';
 
 class FragmentHolder extends StatefulWidget {
@@ -15,54 +15,31 @@ class _FragmentHolderState extends State<FragmentHolder> {
 
   @override
   Widget build(BuildContext context) {
-
     return MaterialApp(
-
       debugShowCheckedModeBanner: false,
-
       initialRoute: '/HomePage1',
-
       onGenerateRoute: (settings) {
-
         switch (settings.name) {
 
           case '/HomePage1':
-
             return MaterialPageRoute(
-              builder: (context) => HomePage1(),
+              builder: (context) => const HomePage1(),
             );
 
-          case '/test1':
-
+          case '/AddScreen':
             return MaterialPageRoute(
-              builder: (context) => Test1(
-                title: 'Software Engineer',
-                company: 'Google',
-                location: 'Mumbai',
-                salary: '₹80,000',
-                Description: 'Flutter Developer Job',
-              ),
+              builder: (context) => const AddEntryScreen(),
             );
 
-          case '/test2':
-
-            final data =
-                settings.arguments as Map<String, dynamic>;
-
+          case '/Editscreen':
             return MaterialPageRoute(
-              builder: (context) => Test2(
-                title: data['title'],
-                company: data['company'],
-                location: data['location'],
-                salary: data['salary'],
-                Description: data['description'],
-              ),
+              builder: (context) => const Editscreen(),
+              settings: settings,
             );
 
           default:
-
             return MaterialPageRoute(
-              builder: (context) => UnknownScreen(),
+              builder: (context) =>  UnknownScreen(),
             );
         }
       },
