@@ -2,6 +2,9 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
+import 'package:placement_tracker/widgets/fragment_holder.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+
 
 
 class MyApp extends StatelessWidget {
@@ -12,33 +15,24 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Placement Tracker',
-      theme: ThemeData(
-        brightness: Brightness.dark,
-        fontFamily: 'Poppins',
-      ),
+      theme: ThemeData(brightness: Brightness.dark, fontFamily: 'Poppins'),
       home: const SplashScreen(),
     );
   }
 }
 
 class AppColors {
-  // Deep Navy Backgrounds
-  static const Color backgroundStart = Color(0xFF020617); // Rich Dark Navy
-  static const Color backgroundEnd = Color(0xFF0F172A); // Slightly Lighter
-
-  // Gradient Accents
+  static const Color backgroundStart = Color(0xFF020617);
+  static const Color backgroundEnd = Color(0xFF0F172A);
   static const Color primaryBlue = Color(0xFF3B82F6);
   static const Color secondaryBlue = Color(0xFF1E40AF);
   static const Color glowColor = Color(0xFF60A5FA);
-
-  // Text
   static const Color textWhite = Colors.white;
   static const Color textGrey = Color(0xFF94A3B8);
-  
-  // Glass Effect
   static const Color glassWhite = Color(0x33FFFFFF);
   static const Color glassBorder = Color(0x33FFFFFF);
 }
+
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
 
@@ -48,8 +42,6 @@ class SplashScreen extends StatefulWidget {
 
 class _SplashScreenState extends State<SplashScreen>
     with TickerProviderStateMixin {
-  
-  // Animation Controllers
   late AnimationController _fadeController;
   late AnimationController _floatController;
   late Animation<double> _fadeAnimation;
@@ -59,18 +51,16 @@ class _SplashScreenState extends State<SplashScreen>
   void initState() {
     super.initState();
 
-    // 1. Fade In & Scale Animation
     _fadeController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 2000),
     );
-    
+
     _fadeAnimation = CurvedAnimation(
       parent: _fadeController,
       curve: const Interval(0.0, 0.8, curve: Curves.easeOut),
     );
 
-    // 2. Floating Loop Animation
     _floatController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 3000),
@@ -80,8 +70,17 @@ class _SplashScreenState extends State<SplashScreen>
       CurvedAnimation(parent: _floatController, curve: Curves.easeInOut),
     );
 
-    // Start the entrance animation
     _fadeController.forward();
+
+    Future.delayed(const Duration(seconds: 4), _navigateToHome);
+  }
+
+  void _navigateToHome() {
+    if (!mounted) return;
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (context) => const FragmentHolder()),
+    );
   }
 
   @override
@@ -101,29 +100,22 @@ class _SplashScreenState extends State<SplashScreen>
           gradient: LinearGradient(
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
-            colors: [
-              AppColors.backgroundStart,
-              AppColors.backgroundEnd,
-            ],
+            colors: [AppColors.backgroundStart, AppColors.backgroundEnd],
           ),
         ),
         child: Stack(
           children: [
-            // Radial Glow Effect (Background)
-            Center(
-              child: Container(
-                width: 600,
-                height: 600,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  gradient: RadialGradient(
-                    colors: [
-                      AppColors.primaryBlue.withOpacity(0.15),
-                      Colors.transparent,
-                    ],
-                  ),
-                ),
+            // Background Image
+            Positioned.fill(
+              child: SvgPicture.asset(
+                'assets/splash_bg.svg',
+                fit: BoxFit.cover,
               ),
+            ),
+
+            // Dark overlay for readability
+            Positioned.fill(
+              child: Container(color: Colors.black.withValues(alpha: 0.35)),
             ),
 
             // Main Content
@@ -132,10 +124,7 @@ class _SplashScreenState extends State<SplashScreen>
                 padding: const EdgeInsets.symmetric(horizontal: 24.0),
                 child: Column(
                   children: [
-                    // Top Right Version
                     _buildHeader(),
-                    
-                    // Main Center Content
                     Expanded(
                       child: AnimatedBuilder(
                         animation: _fadeAnimation,
@@ -151,8 +140,6 @@ class _SplashScreenState extends State<SplashScreen>
                         child: _buildCenterContent(),
                       ),
                     ),
-
-                    // Bottom Footer
                     _buildFooter(),
                   ],
                 ),
@@ -164,7 +151,6 @@ class _SplashScreenState extends State<SplashScreen>
     );
   }
 
-  /// Header Version Text
   Widget _buildHeader() {
     return Align(
       alignment: Alignment.topRight,
@@ -190,12 +176,10 @@ class _SplashScreenState extends State<SplashScreen>
     );
   }
 
-  /// Center Logo and Text
   Widget _buildCenterContent() {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        // Animated Floating Logo Container
         AnimatedBuilder(
           animation: _floatAnimation,
           builder: (context, child) {
@@ -206,25 +190,9 @@ class _SplashScreenState extends State<SplashScreen>
           },
           child: _buildGlassLogoContainer(),
         ),
-        
+
         const SizedBox(height: 45),
 
-        // App Title
-        // Text(
-        //   'Placement Tracker',
-        //   style: GoogleFonts.poppins(
-        //     fontSize: 32,
-        //     fontWeight: FontWeight.bold,
-        //     color: AppColors.textWhite,
-        //     letterSpacing: 0.5,
-        //     height: 1.2,
-        //   ),
-        //   textAlign: TextAlign.center,
-        // ),
-
-        const SizedBox(height: 12),
-
-        // Subtitle
         Text(
           'Track • Apply • Get Hired',
           style: GoogleFonts.poppins(
@@ -236,70 +204,62 @@ class _SplashScreenState extends State<SplashScreen>
         ),
 
         const SizedBox(height: 60),
-
-        // Loading Indicator
         _buildLoadingIndicator(),
       ],
     );
   }
 
-  /// Glassmorphism Logo Container
   Widget _buildGlassLogoContainer() {
+    // Shared corner radius handles crisp alignment for shadows, clip boundary, and borders
+    const double containerRadius = 36.0;
+
     return Container(
-      width: 160,
-      height: 160,
+      width: 300,
+      height: 300,
       decoration: BoxDecoration(
-        shape: BoxShape.circle,
+        borderRadius: BorderRadius.circular(containerRadius),
         boxShadow: [
-          // Soft Blue Glow
           BoxShadow(
-            color: AppColors.primaryBlue.withOpacity(0.3),
+            color: AppColors.primaryBlue.withValues(alpha: 0.3),
             blurRadius: 40,
             spreadRadius: 5,
           ),
         ],
       ),
-      child: ClipOval(
-        child: BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-          child: Container(
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: AppColors.glassWhite,
-              border: Border.all(
-                color: AppColors.glassBorder,
-                width: 1.2,
-              ),
-            ),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(containerRadius),
+        child: 
+        //BackdropFilter(
+         // filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+          //child: 
+          Container(
+            // decoration: BoxDecoration(
+            //   color: AppColors.glassWhite,
+            //   border: Border.all(color: AppColors.glassBorder, width: 1.2),
+            //   borderRadius: BorderRadius.circular(containerRadius),
+            // ),
             padding: const EdgeInsets.all(30),
             child: Image.asset(
-              'assets/splash_image.png', // Ensure this asset exists
+              'assets/splash_image.png',
               fit: BoxFit.contain,
-              color: Colors.white,
+              //color: Colors.white,
             ),
           ),
         ),
-      ),
-    );
+      );
+    //);
   }
 
-  /// Loading Animation
   Widget _buildLoadingIndicator() {
     return Column(
       children: [
-        // Using Staggered Dots Wave for premium feel
-        LoadingAnimationWidget.staggeredDotsWave(
-          color: Colors.white,
-          size: 35,
-        ),
-        
+        LoadingAnimationWidget.staggeredDotsWave(color: Colors.white, size: 35),
         const SizedBox(height: 16),
-        
         Text(
           'Preparing opportunities...',
           style: GoogleFonts.poppins(
             fontSize: 12,
-            color: AppColors.textGrey.withOpacity(0.7),
+            color: AppColors.textGrey.withValues(alpha: 0.7),
             letterSpacing: 0.5,
           ),
         ),
@@ -307,7 +267,6 @@ class _SplashScreenState extends State<SplashScreen>
     );
   }
 
-  /// Footer Copyright
   Widget _buildFooter() {
     return Padding(
       padding: const EdgeInsets.only(bottom: 24.0),
@@ -315,7 +274,7 @@ class _SplashScreenState extends State<SplashScreen>
         '© 2026 Placement Tracker',
         style: GoogleFonts.poppins(
           fontSize: 11,
-          color: AppColors.textGrey.withOpacity(0.5),
+          color: AppColors.textGrey.withValues(alpha: 0.5),
           letterSpacing: 0.5,
         ),
       ),
