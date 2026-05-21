@@ -1,11 +1,23 @@
 import 'package:flutter/material.dart';
 //import 'package:placement_tracker/widgets/fragment_holder.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'dart:convert';
 
 
 class Job {
   String title, company, city, description;
   int salary;
   Job(this.title, this.company, this.city, this.salary, this.description);
+
+  Map<String, dynamic> toJson(){
+    return{
+      "title" : title,
+      "company" : company,
+      "city" : city,
+      "salary" : salary,
+      "description" : description,
+    };
+  }
 }
 
 class HomePage1 extends StatefulWidget {
@@ -40,12 +52,14 @@ class _HomePage1State extends State<HomePage1> {
 
     });
   }
+  savelist();
 }
 
   void deleteJob(Job job) {
     setState(() {
       jobs.remove(job);
     });
+    savelist();
   }
 
 Future<void> editJob(Job job) async {
@@ -69,7 +83,16 @@ Future<void> editJob(Job job) async {
       }
     });
   }
+  savelist();
 }
+
+Future<void> savelist() async{
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    String jsonString = jsonEncode(jobs.map((e) => e.toJson()).toList());
+
+    await prefs.setString("MyList", jsonString);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -149,6 +172,7 @@ Future<void> editJob(Job job) async {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
+                                
                                 Text(
                                   job.company,
                                   style: const TextStyle(
@@ -165,6 +189,20 @@ Future<void> editJob(Job job) async {
                                   job.city,
                                   style: const TextStyle(color: Colors.grey),
                                 ),
+                                Text(
+                                  job.description,
+                                  style: const TextStyle(
+                                    fontSize: 16,
+                                    
+                                  ),
+                                ),
+                                Text(
+                                  'Salary: ₹${job.salary}',
+                                  style: const TextStyle(
+                                    color: Colors.green,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                )
                               ],
                             ),
                           ),
